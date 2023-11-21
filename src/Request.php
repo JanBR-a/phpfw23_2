@@ -5,7 +5,7 @@
         private $controller;
         private $action;
         private $method;
-        private $params;
+        private $param;
         private $type;
 
         protected $arrURI;
@@ -14,19 +14,25 @@
         {
             $url=$_SERVER['REQUEST_URI'];
             $uri_parts=explode('/',$url);
+            
             array_shift($uri_parts);
-            $first=$uri_parts[0];
-            var_dump($uri_parts);
-            die;
-            if($first=""){
+
+           
+            
+           
+            if($uri_parts[0]==""){
                 $this->setController('index');
                 $this->setAction('index');
-            }
-            elseif($first=="api"){
+              
+            }elseif($uri_parts[0]=="api"){
                 $this->setType("api");
-                $this->arrURI=array_slice($uri_parts,1);
+                $uri_parts=array_slice($uri_parts,1);
+                $this->arrURI=$uri_parts;
+                $this->extractURI();
             }else{
-                $this->arrURI=array_slice($uri_parts,0); 
+                   
+                $uri_parts=array_slice($uri_parts,0); 
+                $this->arrURI=$uri_parts;
                 $this->extractURI(); 
             }
                        
@@ -37,8 +43,10 @@
          */
         private function extractURI(){
             //estudi de casos possibles?
+            if($this->arrURI[count($this->arrURI)-1]==""){
+                array_pop($this->arrURI);
+            }
             $length=count($this->arrURI);
-            var_dump($length);
             switch($length){
                 case 1://only controller
                     if($this->arrURI[0]==""){
@@ -47,12 +55,16 @@
                         $this->setController($this->arrURI[1]);
                     }
                     $this->setAction('index');
-                    var_dump($this);
+                   
                     break;
                 case 2://controller  & action
-                    
-
-                case 3: //controller & action & params
+                    $this->setController($this->arrURI[0]);
+                    $this->setAction($this->arrURI[1]);
+                    break;
+                default: //controller & action & params
+                    $this->setController($this->arrURI[0]);
+                    $this->setAction($this->arrURI[1]);
+                    $this->setParam($this->arrURI[2]);
             }
         }
 
@@ -119,9 +131,9 @@
         /**
          * Get the value of params
          */ 
-        public function getParams()
+        public function getParam()
         {
-                return $this->params;
+                return $this->param;
         }
 
         /**
@@ -129,9 +141,9 @@
          *
          * @return  self
          */ 
-        public function setParams($params)
+        public function setParam($param)
         {
-                $this->params = $params;
+                $this->param = $param;
 
                 return $this;
         }
@@ -147,4 +159,6 @@
 
                 return $this;
         }
+
+        
     }

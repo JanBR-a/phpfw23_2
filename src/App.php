@@ -12,7 +12,8 @@
         {
             $this->request=new Request;
             //$request nos ofrece api o controlador y accion
-
+            echo $this->request->getController();
+            echo $this->request->getAction();
         }
         
     }
