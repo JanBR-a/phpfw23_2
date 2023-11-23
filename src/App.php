@@ -3,6 +3,7 @@
 
     //use App\Session;
     use App\Request;
+use Exception;
 
     final class App{
       //  protected Session $session;
@@ -14,25 +15,33 @@
             //$request nos ofrece api o controlador y accion
             $controller=$this->request->getController();
             $action=$this->request->getAction();
-            $this->dispatch($controller,$action);
+          
+            $this->dispatch($this->request->getApi(),$controller,$action);
         }
         
-        private function dispatch($controller,$action){
+        private function dispatch($api,$controller,$action){
           try{
-              $nameController='\\App\Controllers\\'.ucfirst($controller).'Controller';
-              $objContr=new $nameController();
-              if(is_callable([$objContr,$action])){
-                  call_user_func([$objContr,$action]);
+              if(in_array($controller,$this->getRoutes($api))){
+                $nameController='\\App\Controllers\\'.ucfirst($controller).'Controller';
+                $objContr=new $nameController();
+                if(is_callable([$objContr,$action])){
+                    call_user_func([$objContr,$action]);
+                }else{
+                  call_user_func([$objContr,'error']);
+                }
               }else{
-                call_user_func([$objContr,'error']);
-              }
+                throw new Exception("Route not found");
+              }    
           }catch(\Exception $e){
             die($e->getMessage());
           }
         }
-        private function getRoutes():array{
+        private function getRoutes($api):array{
           $routes=[];
-          $dir=__DIR__.'/Controllers';
+          if($api){
+            $dir=__DIR__.'/api/Controllers';}
+            else{
+              $dir=__DIR__.'/Controllers';}
           $handle=opendir($dir);
           while(($entry=readdir($handle))!=false){
             if($entry!='.' && $entry!='..'){
