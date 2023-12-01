@@ -1,36 +1,43 @@
 <?php
     namespace App;
 
-    //use App\Session;
+   
     use App\Request;
-use Exception;
+    use App\Session;
 
     final class App{
-      //  protected Session $session;
+        protected Session $session;
         protected Request $request;
 
         function __construct()
         {
             $this->request=new Request;
+            $this->session=new Session;
             //$request nos ofrece api o controlador y accion
             $controller=$this->request->getController();
-            $action=$this->request->getAction();
-          
+            $action=$this->request->getAction();  
             $this->dispatch($this->request->getApi(),$controller,$action);
         }
         
         private function dispatch($api,$controller,$action){
           try{
               if(in_array($controller,$this->getRoutes($api))){
-                $nameController='\\App\Controllers\\'.ucfirst($controller).'Controller';
-                $objContr=new $nameController();
+                if($api){
+                  $nameController='\\App\Api\Controllers\\'.ucfirst($controller).'Controller';
+                dd($nameController);
+                }else{
+                  $nameController='\\App\Controllers\\'.ucfirst($controller).'Controller';
+                }
+                $objContr=new $nameController(
+                  $this->session,
+                  $this->request);
                 if(is_callable([$objContr,$action])){
                     call_user_func([$objContr,$action]);
                 }else{
-                  call_user_func([$objContr,'error']);
+                  throw new \Exception("Action not found");
                 }
               }else{
-                throw new Exception("Route not found");
+                throw new \Exception("Route not found");
               }    
           }catch(\Exception $e){
             die($e->getMessage());

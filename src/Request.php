@@ -27,7 +27,7 @@
                 $this->arrURI=array_slice( $this->arrURI,0); 
                 $this->extractURI();
             }
-                       
+           $this->setMethod($_SERVER['REQUEST_METHOD']);            
         }
         private function extractURI(){
             //estudi de casos possibles?
