@@ -2,16 +2,17 @@
     namespace App\Controllers;
     use App\Request;
     use App\Controller;
+    use App\View;
     class UserController extends Controller {
       
         function __construct($session,$request)
         {
             parent::__construct($session,$request);
-            echo "UserController";
+            
          
         }
         function index(){
-            echo "INDEX";
+            echo View::render('user');
         }
        
     }

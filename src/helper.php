@@ -7,7 +7,9 @@
 
 function dd(){
     foreach(func_get_args() as $arg){
-        echo "<pre>".print_r($arg)."</pre>";
+        echo "<pre>"
+        .print_r($arg).
+        "</pre>";
     }
-    exit();
+    die;
 }

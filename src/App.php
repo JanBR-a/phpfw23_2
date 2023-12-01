@@ -24,7 +24,7 @@
               if(in_array($controller,$this->getRoutes($api))){
                 if($api){
                   $nameController='\\App\Api\Controllers\\'.ucfirst($controller).'Controller';
-                dd($nameController);
+                
                 }else{
                   $nameController='\\App\Controllers\\'.ucfirst($controller).'Controller';
                 }
