@@ -16,7 +16,7 @@ class QueryBuilder{
     function selectAll($table){
         $statement = $this->pdo->prepare("select * from {$table}");
         $statement->execute();
-        return $statement->fetchAll();
+        return $statement->fetchAll(\PDO::FETCH_CLASS);
     }
 
     public function insert(string $table, array $data): bool {
@@ -45,7 +45,7 @@ class QueryBuilder{
         $statement = $this->pdo->prepare($query);
         $statement->execute($conditions);
 
-        return $statement->fetchAll();
+        return $statement->fetchAll(\PDO::FETCH_CLASS);
     }
 
     public function delete(string $table, array $conditions): int {
